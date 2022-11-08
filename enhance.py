@@ -12,7 +12,8 @@ import random
 import threading
 import time
 
-from utils import toimage, error, warn, extend, ansi
+from cv import denoise
+from utils import toimage, error, warn, extend, ansi, read_image
 
 # Configure all options first, so we can later custom-load other libraries (Theano) based on device specified by user.
 parser = argparse.ArgumentParser(description='Generate a new image by applying style onto a content image.',
@@ -112,8 +113,8 @@ class DataLoader(threading.Thread):
     def add_to_buffer(self, f):
         filename = os.path.join(self.cwd, f)
         try:
-            orig = PIL.Image.open(filename).convert('RGB')
-            seed = PIL.Image.open(filename.replace("/x/", "/y/")).convert('RGB')
+            orig = read_image(filename, False)
+            seed = read_image(filename.replace("/x/", "/y/"))
         except Exception as e:
             warn('Could not load `{}` as image.'.format(filename),
                  '  - Try fixing or removing the file before next run.')
@@ -531,8 +532,7 @@ def main():
         enhancer = NeuralEnhancer(loader=False)
         for filename in args.files:
             print(filename, end=' ')
-            img = cv2.imread(filename)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = read_image(filename)
             out = enhancer.process(img)
             out_path = args.out or os.path.splitext(filename)[0] + '_ne%ix.png' % args.zoom
             out.save(out_path)

@@ -21,5 +21,7 @@ def denoise(img):
 
     return show_img
 
+# cv2.imwrite('24.png', denoise(cv2.imread('./data/1-2383/y/24.png')))
 
-cv2.imwrite('24.png', denoise(cv2.imread('./data/1-2383/y/24.png')))
+# python enhance.py --train "data/output/*/x/*.png" --type photo --model repair --epochs=500 --batch-shape=64 --device=gpu0  --generator-downscale=2 --generator-upscale=2 --generator-blocks=8 --generator-filters=128 --generator-residual=0  --perceptual-layer=conv2_2 --smoothness-weight=1e3 --adversary-weight=0.0
+# python enhance.py --type=photo --model=repair --zoom=1 --out 24.png ./data/1-2383/y/24.png

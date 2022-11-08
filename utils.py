@@ -4,6 +4,10 @@ import sys
 import numpy as np
 from PIL import Image
 
+from cv import denoise
+import cv2
+
+
 class ansi:
     WHITE = '\033[0;97m'
     WHITE_B = '\033[1;97m'
@@ -196,3 +200,10 @@ def toimage(arr, high=255, low=0, cmin=None, cmax=None, pal=None,
     # Here we know data and mode is correct
     image = Image.frombytes(mode, shape, strdata)
     return image
+
+
+def read_image(filename, noise=True):
+    img = cv2.imread(filename)
+    if noise:
+        img = denoise(img)
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
