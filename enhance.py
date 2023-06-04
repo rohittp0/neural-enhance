@@ -59,8 +59,8 @@ add_arg('--adversarial-start', default=2, type=int, help='Epoch for generator to
 add_arg('--device', default='gpu', type=str, help='Name of the CPU/GPU to use, for Theano.')
 
 args = parser.parse_args()
-# os.environ.setdefault('THEANO_FLAGS', 'floatX=float32,device={},force_device=True,allow_gc=True,'
-#                                           'print_active_device=False'.format(args.device))
+os.environ.setdefault('THEANO_FLAGS', 'floatX=float32,device={},force_device=True,allow_gc=True,'
+                                          'print_active_device=False'.format(args.device))
 # os.environ.setdefault('CUDA_ROOT', '/usr/bin/nvcc')
 
 # Scientific & Imaging Libraries
@@ -486,7 +486,8 @@ class NeuralEnhancer(object):
         self.model.save_generator()
         print(ansi.ENDC)
 
-    def match_histograms(self, A, B, rng=(0.0, 255.0), bins=64):
+    @staticmethod
+    def match_histograms(A, B, rng=(0.0, 255.0), bins=64):
         (Ha, Xa), (Hb, Xb) = [np.histogram(i, bins=bins, range=rng, density=True) for i in [A, B]]
         X = np.linspace(rng[0], rng[1], bins, endpoint=True)
         Hpa, Hpb = [np.cumsum(i) * (rng[1] - rng[0]) ** 2 / float(bins) for i in [Ha, Hb]]
